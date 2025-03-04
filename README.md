@@ -31,7 +31,7 @@ The **DLS-DApp** is the official interface for the **DLS Utility Token**, a bloc
 
 ## Getting Started
 
-### 1. Clone the Repository
+### 1. Technologies Used
 ```bash
 git clone https://github.com/your-repo/DLS-DApp.git
 cd DLS-DApp

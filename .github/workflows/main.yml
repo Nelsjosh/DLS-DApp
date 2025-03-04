@@ -1,0 +1,14 @@
+const hre = require("hardhat");
+
+async function main() {
+  const DLSUtilityToken = await hre.ethers.getContractFactory("DLSUtilityToken");
+  const dls = await DLSUtilityToken.deploy();
+  await dls.deployed();
+  console.log(`DLS Utility Token deployed to: ${dls.address}`);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+ 

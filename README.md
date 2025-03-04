@@ -33,10 +33,6 @@ The **DLS-DApp** is the official interface for the **DLS Utility Token**, a bloc
 
 ### 1. Technologies Used
 ```bash
-git clone https://github.com/your-repo/DLS-DApp.git
-cd DLS-DApp
-npm install
-npm start
 Technologies Used
 Blockchain: Polygon (MATIC)
 Smart Contracts: Solidity, ERC-20, ERC-721

@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract LoyaltyRewards {
+    mapping(address => uint256) public rewards;
+    address private _owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Not the owner");
+        _;
+    }
+
+    constructor() {
+        _owner = msg.sender;
+    }
+
+    function distributeRewards(address recipient, uint256 amount) public onlyOwner {
+        rewards[recipient] += amount;
+    }
+
+    function claimRewards() public {
+        uint256 reward = rewards[msg.sender];
+        require(reward > 0, "No rewards to claim");
+        rewards[msg.sender] = 0;
+        // Transfer DLS tokens to the msg.sender
+    }
+}

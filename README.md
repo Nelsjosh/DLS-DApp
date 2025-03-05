@@ -39,12 +39,14 @@ Smart Contracts: Solidity, ERC-20, ERC-721
 Storage: IPFS, Arweave
 Frontend: React, Next.js, Web3.js, Ethers.js
 Wallet Integration: MetaMask, WalletConnect
+
 Security: OpenZeppelin contracts, audited smart contract security
 Contributing
+
 Contributions are welcome! Please submit a pull request or open an issue for discussion.
 
 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-💾 DLS-DApp is the future of decentralized media preservation. Join us in building a secure and transparent way to store, share, and protect digital legacies! 
+DLS-DApp is the future of decentralized media preservation. Join us in building a secure and transparent way to store, share, and protect digital legacies! 
 Would you like any modifications or additional sections?

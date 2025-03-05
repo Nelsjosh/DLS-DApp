@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AccessControlDRM {
+    mapping(address => bool) private _accessList;
+    address private _owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Not the owner");
+        _;
+    }
+
+    constructor() {
+        _owner = msg.sender;
+    }
+
+    function grantAccess(address user) public onlyOwner {
+        _accessList[user] = true;
+    }
+
+    function revokeAccess(address user) public onlyOwner {
+        _accessList[user] = false;
+    }
+
+    function checkAccess(address user) public view returns (bool) {
+        return _accessList[user];
+    }
+}

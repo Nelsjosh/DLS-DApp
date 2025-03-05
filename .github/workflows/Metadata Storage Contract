@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MetadataStorage {
+    mapping(uint256 => string) private _metadata;
+    address private _owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Not the owner");
+        _;
+    }
+
+    constructor() {
+        _owner = msg.sender;
+    }
+
+    function storeMetadata(uint256 tokenId, string memory metadata) public onlyOwner {
+        _metadata[tokenId] = metadata;
+    }
+
+    function getMetadata(uint256 tokenId) public view returns (string memory) {
+        return _metadata[tokenId];
+    }
+}

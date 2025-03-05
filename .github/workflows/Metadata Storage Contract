@@ -20,5 +20,47 @@ contract MetadataStorage {
 
     function getMetadata(uint256 tokenId) public view returns (string memory) {
         return _metadata[tokenId];
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract MetadataStorage {
+    struct Metadata {
+        string ipfsHash; // IPFS or Arweave hash
+        address owner;
+        uint256 timestamp;
+    }
+
+    mapping(uint256 => Metadata) private metadataRecords;
+    mapping(address => uint256[]) private userRecords;
+    
+    uint256 public metadataCount;
+
+    event MetadataStored(uint256 indexed id, address indexed owner, string ipfsHash, uint256 timestamp);
+
+    /// @notice Stores a metadata hash on-chain
+    /// @param _ipfsHash The hash of the metadata stored on IPFS/Arweave
+    function storeMetadata(string memory _ipfsHash) external {
+        metadataCount++;
+        metadataRecords[metadataCount] = Metadata(_ipfsHash, msg.sender, block.timestamp);
+        userRecords[msg.sender].push(metadataCount);
+
+        emit MetadataStored(metadataCount, msg.sender, _ipfsHash, block.timestamp);
+    }
+
+    /// @notice Retrieves metadata by ID
+    /// @param _id The unique metadata ID
+    function getMetadata(uint256 _id) external view returns (string memory, address, uint256) {
+        require(_id > 0 && _id <= metadataCount, "Invalid metadata ID");
+        Metadata memory meta = metadataRecords[_id];
+        return (meta.ipfsHash, meta.owner, meta.timestamp);
+    }
+
+    /// @notice Retrieves all metadata IDs owned by a user
+    /// @param _user The address of the user
+    function getUserMetadata(address _user) external view returns (uint256[] memory) {
+        return userRecords[_user];
+    }
+}
+
     }
 }

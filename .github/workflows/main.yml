@@ -26,3 +26,10 @@ POLYGONSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY
 npx hardhat compile
 npx hardhat run scripts/deploy.js --network mumbai
 npx hardhat run scripts/deploy.js --network polygon
+npx create-next-app@latest frontend
+cd frontend
+npm install ethers web3modal
+npm run dev
+git add .
+git commit -m "Initial setup with contracts and frontend"
+git push origin main

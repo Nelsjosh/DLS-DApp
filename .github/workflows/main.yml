@@ -1,14 +1,28 @@
-const hre = require("hardhat");
+npx hardhat
+npm install --save-dev hardhat @openzeppelin/contracts dotenv ethers hardhat-deploy hardhat-etherscan
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
 
-async function main() {
-  const DLSUtilityToken = await hre.ethers.getContractFactory("DLSUtilityToken");
-  const dls = await DLSUtilityToken.deploy();
-  await dls.deployed();
-  console.log(`DLS Utility Token deployed to: ${dls.address}`);
-}
-
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
- 
+module.exports = {
+    solidity: "0.8.19",
+    networks: {
+        mumbai: {
+            url: process.env.POLYGON_MUMBAI_RPC,
+            accounts: [process.env.PRIVATE_KEY]
+        },
+        polygon: {
+            url: process.env.POLYGON_MAINNET_RPC,
+            accounts: [process.env.PRIVATE_KEY]
+        }
+    },
+    etherscan: {
+        apiKey: process.env.POLYGONSCAN_API_KEY
+    }
+};
+POLYGON_MUMBAI_RPC=YOUR_INFURA_ALCHEMY_RPC
+POLYGON_MAINNET_RPC=YOUR_INFURA_ALCHEMY_RPC
+PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY
+POLYGONSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network mumbai
+npx hardhat run scripts/deploy.js --network polygon

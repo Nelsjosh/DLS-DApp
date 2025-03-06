@@ -26,7 +26,6 @@ Privacy & Security – Enforce access control and DRM encryption for media prote
 Liquidity Pool & Staking – Stake DLS tokens to earn rewards and contribute to liquidity pools
 
 Roadmap
-
 Phase 1 – Smart contract development and testnet launch (Completed)
 Phase 2 – Mainnet deployment and liquidity pool setup
 Phase 3 – Full dApp integration with metadata and NFT utilities

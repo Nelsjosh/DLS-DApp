@@ -9,36 +9,28 @@ The DLS-DApp is the official platform for the DLS Utility Token, a blockchain-po
 Key Use Cases
 
 Token Transactions – Send, receive, and track DLS tokens securely.
-
 Loyalty Rewards – Earn and redeem DLS tokens for discounts on photo and media digitization services.
-
 Metadata Preservation – Securely store and retrieve media metadata using IPFS/Arweave integration.
-
 NFT-Based Ownership – Convert digitized media into NFTs for verifiable digital ownership.
-
 Decentralized Sharing – Share media privately with built-in digital rights management (DRM) for content protection.
 
 Features
 
 Connect Wallet – Supports MetaMask, WalletConnect, and Coinbase Wallet
-
 View Token Balance – Track your DLS token holdings in real-time
-
 Send & Receive DLS Tokens – Secure, gas-efficient Polygon-based transactions
-
 Redeem Rewards – Use DLS tokens for discounts on Digital Legacy Studios (DLS) services
-
 NFT Creation – Convert digitized media into secure, verifiable NFTs
-
 Metadata Storage – Store and retrieve photo and video metadata on IPFS/Arweave
-
 Privacy & Security – Enforce access control and DRM encryption for media protection
-
 Liquidity Pool & Staking – Stake DLS tokens to earn rewards and contribute to liquidity pools
 
 Roadmap
 
-Phase 1 – Smart contract development and testnet launch (Completed)Phase 2 – Mainnet deployment and liquidity pool setupPhase 3 – Full dApp integration with metadata and NFT utilitiesPhase 4 – Marketing, community engagement, and exchange listings
+Phase 1 – Smart contract development and testnet launch (Completed)
+Phase 2 – Mainnet deployment and liquidity pool setup
+Phase 3 – Full dApp integration with metadata and NFT utilities
+Phase 4 – Marketing, community engagement, and exchange listings
 
 Getting Started
 
@@ -56,9 +48,7 @@ Setup & Installation
 Prerequisites
 
 Node.js (v16 or later)
-
 Hardhat (for contract deployment)
-
 Metamask (or any Web3 wallet)
 
 Clone Repository & Install Dependencies

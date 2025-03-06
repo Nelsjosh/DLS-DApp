@@ -1,28 +1,83 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
-contract AccessControlDRM {
-    mapping(address => bool) private _accessList;
-    address private _owner;
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-    modifier onlyOwner() {
-        require(msg.sender == _owner, "Not the owner");
-        _;
+contract AccessControlDRM is Ownable {
+    IERC20 public dlsToken;
+    IERC721 public dlsNFT;
+
+    struct Access {
+        bool granted;
+        uint256 expiration; // Timestamp for expiration (0 = no expiration)
     }
 
-    constructor() {
-        _owner = msg.sender;
+    mapping(uint256 => mapping(address => Access)) public mediaAccess; // NFT ID -> User Address -> Access Info
+
+    event AccessGranted(uint256 indexed mediaId, address indexed user, uint256 expiration);
+    event AccessRevoked(uint256 indexed mediaId, address indexed user);
+    event PaymentForAccess(uint256 indexed mediaId, address indexed user, uint256 amount);
+
+    constructor(address _dlsToken, address _dlsNFT) {
+        require(_dlsToken != address(0), "Invalid DLS Token address");
+        require(_dlsNFT != address(0), "Invalid DLS NFT address");
+        dlsToken = IERC20(_dlsToken);
+        dlsNFT = IERC721(_dlsNFT);
     }
 
-    function grantAccess(address user) public onlyOwner {
-        _accessList[user] = true;
+    /// @notice Grants access to a media asset
+    /// @param mediaId The ID of the NFT representing the media
+    /// @param user The address being granted access
+    /// @param duration Time in seconds before access expires (0 = permanent)
+    function grantAccess(uint256 mediaId, address user, uint256 duration) external {
+        require(dlsNFT.ownerOf(mediaId) == msg.sender, "Not the media owner");
+
+        uint256 expiration = duration > 0 ? block.timestamp + duration : 0;
+        mediaAccess[mediaId][user] = Access(true, expiration);
+
+        emit AccessGranted(mediaId, user, expiration);
     }
 
-    function revokeAccess(address user) public onlyOwner {
-        _accessList[user] = false;
+    /// @notice Revokes access to a media asset
+    /// @param mediaId The ID of the NFT
+    /// @param user The address having access revoked
+    function revokeAccess(uint256 mediaId, address user) external {
+        require(dlsNFT.ownerOf(mediaId) == msg.sender, "Not the media owner");
+
+        delete mediaAccess[mediaId][user];
+        emit AccessRevoked(mediaId, user);
     }
 
-    function checkAccess(address user) public view returns (bool) {
-        return _accessList[user];
+    /// @notice Allows users to pay for temporary access to a media asset
+    /// @param mediaId The ID of the NFT representing the media
+    /// @param amount The DLS token payment amount
+    /// @param duration Time in seconds for access duration
+    function payForAccess(uint256 mediaId, uint256 amount, uint256 duration) external {
+        require(amount > 0, "Payment must be greater than zero");
+        require(dlsToken.transferFrom(msg.sender, dlsNFT.ownerOf(mediaId), amount), "Token transfer failed");
+
+        uint256 expiration = block.timestamp + duration;
+        mediaAccess[mediaId][msg.sender] = Access(true, expiration);
+
+        emit PaymentForAccess(mediaId, msg.sender, amount);
+    }
+
+    /// @notice Checks if a user has access to a media asset
+    /// @param mediaId The ID of the NFT
+    /// @param user The user address to check
+    function hasAccess(uint256 mediaId, address user) external view returns (bool) {
+        Access memory access = mediaAccess[mediaId][user];
+
+        if (!access.granted) {
+            return false;
+        }
+
+        if (access.expiration == 0 || access.expiration > block.timestamp) {
+            return true;
+        }
+
+        return false;
     }
 }

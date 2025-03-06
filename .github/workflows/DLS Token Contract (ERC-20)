@@ -1,11 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DLSUtilityToken is ERC20, ERC20Burnable {
-    constructor(uint256 initialSupply) ERC20("DLS Utility Token", "DLS") {
-        _mint(msg.sender, initialSupply);
+contract DLSUtilityToken is ERC20, Ownable {
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18; // 1 Billion DLS Tokens
+
+    constructor() ERC20("DLS Utility Token", "DLS") {
+        _mint(msg.sender, MAX_SUPPLY); // Mint all tokens to contract owner at deployment
+    }
+
+    /// @notice Burns tokens from the caller's balance
+    /// @param amount The amount of tokens to burn
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
     }
 }

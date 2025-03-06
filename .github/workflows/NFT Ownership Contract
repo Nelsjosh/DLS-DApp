@@ -1,17 +1,48 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFTOwnership is ERC721 {
+contract NFTOwnership is ERC721URIStorage, Ownable {
     uint256 private _tokenIds;
+    mapping(uint256 => address) private _owners;
 
-    constructor() ERC721("DLS NFT", "DLSNFT") {}
+    event NFTMinted(address indexed owner, uint256 indexed tokenId, string metadataURI);
+    event NFTBurned(uint256 indexed tokenId);
 
-    function mint(address recipient) public returns (uint256) {
+    constructor() ERC721("DLS Media NFT", "DLSNFT") {}
+
+    /// @notice Mints a new NFT representing a digitized media asset
+    /// @param recipient The address of the new owner
+    /// @param metadataURI IPFS/Arweave hash storing metadata
+    function mintNFT(address recipient, string memory metadataURI) external onlyOwner returns (uint256) {
+        require(bytes(metadataURI).length > 0, "Metadata URI cannot be empty");
+
         _tokenIds++;
         uint256 newItemId = _tokenIds;
         _mint(recipient, newItemId);
+        _setTokenURI(newItemId, metadataURI);
+        _owners[newItemId] = recipient;
+
+        emit NFTMinted(recipient, newItemId, metadataURI);
         return newItemId;
+    }
+
+    /// @notice Burns an NFT, revoking ownership
+    /// @param tokenId The ID of the NFT to burn
+    function burnNFT(uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender || msg.sender == owner(), "Not authorized");
+        _burn(tokenId);
+        delete _owners[tokenId];
+
+        emit NFTBurned(tokenId);
+    }
+
+    /// @notice Retrieves owner of a specific NFT
+    /// @param tokenId The ID of the NFT
+    function getNFTOwner(uint256 tokenId) external view returns (address) {
+        require(_exists(tokenId), "Token does not exist");
+        return _owners[tokenId];
     }
 }

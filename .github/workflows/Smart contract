@@ -1,14 +1,20 @@
 const hre = require("hardhat");
 
 async function main() {
+  console.log("Deploying DLS Utility Token...");
+
+  // Get the contract factory
   const DLSUtilityToken = await hre.ethers.getContractFactory("DLSUtilityToken");
+
+  // Deploy the contract
   const dls = await DLSUtilityToken.deploy();
   await dls.deployed();
-  console.log(`DLS Utility Token deployed to: ${dls.address}`);
+
+  console.log(`DLS Utility Token deployed successfully!`);
+  console.log(`Contract Address: ${dls.address}`);
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error("Deployment failed:", error);
   process.exitCode = 1;
 });
-dapp-launchpad dev -h

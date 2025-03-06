@@ -1,6 +1,78 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
-contract PaymentSubscription {
-    // Define payment and subscription logic here
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract PaymentSubscription is Ownable {
+    IERC20 public dlsToken;
+    address public serviceProvider;
+
+    struct Subscription {
+        address subscriber;
+        uint256 amount;
+        uint256 startTime;
+        uint256 duration; // in seconds
+        bool active;
+    }
+
+    mapping(address => Subscription) public subscriptions;
+    mapping(address => uint256) public balances;
+
+    event PaymentMade(address indexed user, uint256 amount);
+    event SubscriptionStarted(address indexed user, uint256 amount, uint256 duration);
+    event SubscriptionCanceled(address indexed user);
+    event FundsWithdrawn(address indexed owner, uint256 amount);
+
+    modifier onlyActiveSubscriber() {
+        require(subscriptions[msg.sender].active, "No active subscription");
+        _;
+    }
+
+    constructor(address _dlsToken, address _serviceProvider) {
+        require(_dlsToken != address(0), "Invalid token address");
+        require(_serviceProvider != address(0), "Invalid provider address");
+        dlsToken = IERC20(_dlsToken);
+        serviceProvider = _serviceProvider;
+    }
+
+    /// @notice Allows users to make a one-time payment
+    /// @param _amount Amount of DLS tokens to pay
+    function makePayment(uint256 _amount) external {
+        require(_amount > 0, "Payment must be greater than zero");
+        require(dlsToken.transferFrom(msg.sender, address(this), _amount), "Token transfer failed");
+
+        balances[serviceProvider] += _amount;
+        emit PaymentMade(msg.sender, _amount);
+    }
+
+    /// @notice Starts a subscription for a user
+    /// @param _amount Amount of DLS tokens per subscription period
+    /// @param _duration Subscription duration in seconds
+    function startSubscription(uint256 _amount, uint256 _duration) external {
+        require(_amount > 0, "Subscription amount must be greater than zero");
+        require(_duration > 0, "Duration must be greater than zero");
+        require(dlsToken.transferFrom(msg.sender, address(this), _amount), "Token transfer failed");
+
+        subscriptions[msg.sender] = Subscription(msg.sender, _amount, block.timestamp, _duration, true);
+        balances[serviceProvider] += _amount;
+
+        emit SubscriptionStarted(msg.sender, _amount, _duration);
+    }
+
+    /// @notice Cancels an active subscription
+    function cancelSubscription() external onlyActiveSubscriber {
+        subscriptions[msg.sender].active = false;
+        emit SubscriptionCanceled(msg.sender);
+    }
+
+    /// @notice Withdraws funds to the service provider
+    function withdrawFunds() external {
+        uint256 amount = balances[serviceProvider];
+        require(amount > 0, "No funds to withdraw");
+        require(dlsToken.transfer(serviceProvider, amount), "Withdrawal failed");
+
+        balances[serviceProvider] = 0;
+        emit FundsWithdrawn(serviceProvider, amount);
+    }
 }

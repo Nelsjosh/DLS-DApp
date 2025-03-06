@@ -30,7 +30,6 @@ Storage: IPFS, Arweave
 Frontend: React, Next.js, Web3.js, Ethers.js
 Wallet Integration: MetaMask, WalletConnect, Coinbase Wallet
 Security: OpenZeppelin contracts, audited smart contract security
-git clone https://github.com/dls/dls-dapp.git
 cd dls-dapp
 npm install
 npx hardhat run scripts/deploy.js --network mumbai

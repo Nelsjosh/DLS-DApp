@@ -89,7 +89,7 @@ We welcome contributions! Please submit a pull request or open an issue for disc
 
 License
 
-This project is licensed under the MIT License, with additional protections for Digital Legacy Studios (DLS) content.See the LICENSE file for full terms.
+This project is licensed under the MIT License, with additional protections for Digital Legacy Studios (DLS) content. See the LICENSE file for full terms.
 
 DLS-DApp is the future of decentralized media preservation. Join us in building a secure and transparent way to store, share, and protect digital legacies!
 
